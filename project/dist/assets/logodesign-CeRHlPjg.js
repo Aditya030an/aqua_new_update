@@ -1,0 +1,1 @@
+var e=`/assets/logodesign-BfEv4NtU.png`;export{e as t};

@@ -1,0 +1,1 @@
+var e=`/assets/exotic-ReBAnDpX.jpeg`;export{e as t};

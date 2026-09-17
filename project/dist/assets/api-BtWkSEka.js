@@ -1,0 +1,1 @@
+import{t as e}from"./axios-CPs0Aqv4.js";var t=e.create({baseURL:`https://aqua-new-iycu.vercel.app/api`});export{t};
