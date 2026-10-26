@@ -1,3 +1,4 @@
+import { isAdminEmail } from "../utils/adminEmails.js";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModels";
 
@@ -22,7 +23,7 @@ const authUser = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await userModel.findById(decoded.id);
 
-    if(user.email !== process.env.ADMIN_EMAIL){
+    if(!isAdminEmail(user.email)){
         return res.status(401).json({
         success: false,
         message: "No Allowed",

@@ -10,6 +10,13 @@ const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET);
 };
 
+// Local-dev only: skip the emailed OTP. Requires DEV_OTP_BYPASS=true (set only in
+// backend/.env.local) AND a local database, so it can never switch on in production.
+const DEV_OTP = "000000";
+const isDevOtpBypass = () =>
+  process.env.DEV_OTP_BYPASS === "true" &&
+  /127\.0\.0\.1|localhost/.test(process.env.MONGO_URI || "");
+
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
 };
@@ -45,12 +52,12 @@ const loginUser = async (req, res) => {
         .status(200)
         .json({ message: "Password updated successfully", success: true });
     }
-    const otp = generateOTP();
+    const otp = isDevOtpBypass() ? DEV_OTP : generateOTP();
     user.otp = otp;
     // user.otpExpires = new Date(Date.now() + 30 * 1000);
     user.otpExpires = new Date(Date.now() + 5 * 60 * 1000);
     await user.save();
-    await sendEmailOtp(user.email, otp);
+    if (!isDevOtpBypass()) await sendEmailOtp(user.email, otp);
     // await sendSMS(`+91${user.phoneNumber}`, otp);
 
     const safeUser = {

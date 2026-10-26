@@ -89,7 +89,7 @@ export const createProduct = async (req, res) => {
 };
 
 export const getProducts = async (req, res) => {
-  const products = await Product.find().sort({ createdAt: -1 });
+  const products = await Product.find().sort({ createdAt: -1 }).lean();
   res.json(products);
 };
 
@@ -174,4 +174,4 @@ export const deleteProduct = async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-};
+};

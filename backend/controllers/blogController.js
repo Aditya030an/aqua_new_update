@@ -5,6 +5,14 @@ export const createBlog = async (req, res) => {
   try {
     console.log("req" , req.body);
     console.log("req" , req.file?.path);
+
+    // Multipart body not parsed / empty form: don't save a blank blog.
+    if (!req.body?.title || !req.body?.content) {
+      return res
+        .status(400)
+        .json({ error: "Title and content are required" });
+    }
+
     const blog = new Blog({
       ...req.body,
       image_url: req.file?.path, // cloudinary url
@@ -19,7 +27,7 @@ export const createBlog = async (req, res) => {
 
 // GET ALL
 export const getBlogs = async (req, res) => {
-  const blogs = await Blog.find().sort({ createdAt: -1 });
+  const blogs = await Blog.find().sort({ createdAt: -1 }).lean();
   res.json(blogs);
 };
 
@@ -54,4 +62,4 @@ export const updateBlog = async (req, res) => {
 export const deleteBlog = async (req, res) => {
   await Blog.findByIdAndDelete(req.params.id);
   res.json({ success: true });
-};
+};

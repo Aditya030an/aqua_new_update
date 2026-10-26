@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import compression from "compression";
 import 'dotenv/config'
 import connectDb from "./config/mongodb.js";
 import userRouter from "./routes/userRoute.js";
@@ -14,6 +15,7 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 //middlewares
+app.use(compression()); // gzip JSON responses (product/blog lists are large)
 app.use(express.json());
 app.use(cors());
 
@@ -42,4 +44,4 @@ const startServer = async () => {
     })
 };
 
-startServer();
+startServer();

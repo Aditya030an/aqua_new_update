@@ -1,4 +1,5 @@
 import userModel from "../models/userModels.js";
+import { isAdminEmail } from "../utils/adminEmails.js";
 
 // Must run AFTER authUser (which sets req.user.id from the JWT).
 // Allows access only if the authenticated user has role "admin"
@@ -23,7 +24,7 @@ const isAdmin = async (req, res, next) => {
 
     const isAdminUser =
       user.role === "admin" ||
-      (process.env.ADMIN_EMAIL && user.email === process.env.ADMIN_EMAIL);
+      isAdminEmail(user.email);
 
     if (!isAdminUser) {
       return res.status(403).json({
