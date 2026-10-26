@@ -31,6 +31,16 @@ app.get("/" ,(req , res)=>{
     res.send("API working")
 })
 
+// Error handler: return the real reason as JSON (upload/Cloudinary/multer errors included)
+app.use((err, req, res, next) => {
+    console.error("ERROR:", req.method, req.originalUrl, err);
+    res.status(err.status || err.statusCode || 500).json({
+        success: false,
+        message: err.message || "Server error",
+        error: err.message || "Server error",
+    });
+});
+
 const startServer = async () => {
     try {
         await connectDb();
